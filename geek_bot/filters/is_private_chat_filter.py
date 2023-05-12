@@ -1,5 +1,7 @@
 from typing import Union
-from aiogram import types, filters
+
+from aiogram import filters, types
+
 
 class IsPrivateChat(filters.BoundFilter):
     async def check(self, event: Union[types.Message, types.CallbackQuery]):

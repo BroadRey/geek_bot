@@ -1,5 +1,6 @@
 from typing import Union
-from aiogram import types, filters
+
+from aiogram import filters, types
 
 
 class IsGroupChat(filters.BoundFilter):
