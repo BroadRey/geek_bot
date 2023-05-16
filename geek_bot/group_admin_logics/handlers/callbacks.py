@@ -1,5 +1,3 @@
-import re
-
 import emoji
 from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup

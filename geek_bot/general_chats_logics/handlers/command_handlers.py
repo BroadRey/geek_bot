@@ -3,7 +3,6 @@ import time
 import emoji
 from aiogram import Dispatcher, filters, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputFile
-from filters.is_group_chat_filter import IsGroupChat
 
 
 def register_command_handlers(dispatcher: Dispatcher):
@@ -20,13 +19,6 @@ def register_command_handlers(dispatcher: Dispatcher):
     dispatcher.register_message_handler(
         mem_command_handler,
         commands=['mem']
-    )
-
-    dispatcher.register_message_handler(
-        pin_command_handler,
-        IsGroupChat(),
-        commands=['pin'],
-        commands_prefix='!/'
     )
 
     dispatcher.register_message_handler(
@@ -70,13 +62,6 @@ async def quiz_command_handler(message: types.Message):
 async def mem_command_handler(message: types.Message):
     photo = InputFile('./pic/mems/mem.jpg')
     await message.reply_photo(photo=photo)
-
-
-async def pin_command_handler(message: types.Message):
-    if not message.reply_to_message:
-        return
-
-    await message.reply_to_message.pin()
 
 
 async def dice_commad_handler(message: types.Message):
