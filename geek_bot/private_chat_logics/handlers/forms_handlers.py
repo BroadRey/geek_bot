@@ -1,12 +1,10 @@
-import csv
-import os
-
+from sqlite3 import IntegrityError
 import filters.filters as handler_filters
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from config import ADMINS
+from database import db
 
 
 def register_form_handlers(dispatcher: Dispatcher):
@@ -22,8 +20,8 @@ def register_form_handlers(dispatcher: Dispatcher):
     )
 
     dispatcher.register_message_handler(
-        process_choosing_mentor_id,
-        state=MentorRegistrator.choosing_mentor_id,
+        process_choosing_mentor_telegram_id,
+        state=MentorRegistrator.choosing_mentor_telegram_id,
     )
 
     dispatcher.register_message_handler(
@@ -48,19 +46,11 @@ def register_form_handlers(dispatcher: Dispatcher):
 
 
 class MentorRegistrator(StatesGroup):
-    choosing_mentor_id = State()
+    choosing_mentor_telegram_id = State()
     choosing_mentor_name = State()
     choosing_mentor_course = State()
     choosing_mentor_age = State()
     choosing_mentor_group = State()
-
-
-async def mentor_registration_command_handler(msg: types.Message):
-    if int(msg.from_user.id) not in ADMINS:
-        return
-
-    await msg.answer(text="Введите ID ментора:")
-    await MentorRegistrator.choosing_mentor_id.set()
 
 
 async def cancel_command_handler(msg: types.Message, state: FSMContext):
@@ -70,50 +60,62 @@ async def cancel_command_handler(msg: types.Message, state: FSMContext):
         await msg.answer("Добавление ментора прервано!")
 
 
-async def process_choosing_mentor_id(msg: types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['id'] = msg.text
+async def mentor_registration_command_handler(msg: types.Message):
+    if int(msg.from_user.id) not in ADMINS:
+        return
 
-    await MentorRegistrator.next()
+    await msg.answer(text="Введите Telegram ID ментора:")
+    await MentorRegistrator.choosing_mentor_telegram_id.set()
+
+
+async def process_choosing_mentor_telegram_id(msg: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['telegram_id'] = msg.text
+
     await msg.answer(text="Введите имя ментора:")
+    await MentorRegistrator.next()
 
 
 async def process_choosing_mentor_name(msg: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['name'] = msg.text
 
-    await MentorRegistrator.next()
     await msg.answer(text="Введите имя направление ментора:")
+    await MentorRegistrator.next()
 
 
 async def process_choosing_mentor_course(msg: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['course'] = msg.text
 
-    await MentorRegistrator.next()
     await msg.answer(text="Введите возраст ментора:")
+    await MentorRegistrator.next()
 
 
 async def process_choosing_mentor_age(msg: types.Message, state: FSMContext):
+    if not msg.text.isdigit():
+        await msg.reply('Возраст должен быть целым числом!')
+        return
+
+    if not (1 <= int(msg.text) < 80):
+        await msg.reply('Возраст должен быть в диапазоне [1; 80)')
+        return
+
     async with state.proxy() as data:
         data['age'] = msg.text
 
-    await MentorRegistrator.next()
     await msg.answer(text="Введите группу ментора:")
+    await MentorRegistrator.next()
 
 
 async def process_choosing_mentor_group(msg: types.Message, state: FSMContext):
-    proxy_data = {}
     async with state.proxy() as data:
-        proxy_data = data.as_dict()
-    await state.finish()
+        data['group'] = msg.text
 
-    with open(f'{os.path.dirname(__file__)}/../form_data/fsmAdminMentor.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow([
-            proxy_data['id'],
-            proxy_data['name'],
-            proxy_data['course'],
-            proxy_data['age'],
-            msg.text],
-        )
+    try:
+        await db.sql_insert_mentor(msg, state)
+        await msg.answer('Ментор успешно добавлен в БД!')
+    except IntegrityError:
+        await msg.answer('Ментор с такими данными уже есть в БД!')
+    finally:
+        await state.finish()
