@@ -1,5 +1,3 @@
-from logging import raiseExceptions
-from nis import cat
 import sqlite3
 from typing import Optional
 from config import bot, ADMINS

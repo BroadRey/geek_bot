@@ -1,5 +1,3 @@
-import re
-
 from aiogram import Dispatcher, types
 from database import db
 from filters.filters import IsPrivateChat
