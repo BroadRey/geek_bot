@@ -95,6 +95,11 @@ async def sql_delete_mentor(msg: types.Message, telegram_id: str):
     if not conn or not cursor:
         raise AttributeError
 
+    mentor_data = sql_select_mentor_by_telegram_id(telegram_id)
+    
+    if not mentor_data:
+        raise Error(f'Ментор отсутствует в БД!')
+
     try:
         cursor.execute(
             '''
@@ -108,3 +113,18 @@ async def sql_delete_mentor(msg: types.Message, telegram_id: str):
     except Error as e:
         await msg.reply(f'Ошибка удаления данных из БД:\n{e}')
         raise e
+
+
+def sql_select_mentor_by_telegram_id(telegram_id: str):
+    if not conn or not cursor:
+        raise AttributeError
+
+    mentor_data = cursor.execute(
+        '''
+            SELECT * FROM mentors
+            WHERE telegram_id = ?
+            ''',
+        (telegram_id,)
+    ).fetchone()
+
+    return mentor_data

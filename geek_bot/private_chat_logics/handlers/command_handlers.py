@@ -1,3 +1,5 @@
+from sqlite3 import Error
+
 from aiogram import Dispatcher, types
 from database import db
 from filters.filters import IsPrivateChat
@@ -53,4 +55,7 @@ async def delete_mentor_command_handler(msg: types.Message):
         await msg.reply(command_format)
         return
 
-    await db.sql_delete_mentor(msg, user_id)
+    try:
+        await db.sql_delete_mentor(msg, user_id)
+    except Error as e:
+        await msg.reply(str(e))
