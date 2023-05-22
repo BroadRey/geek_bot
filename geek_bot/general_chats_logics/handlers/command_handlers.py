@@ -60,7 +60,7 @@ async def quiz_command_handler(message: types.Message):
 
 
 async def mem_command_handler(message: types.Message):
-    photo = InputFile('./pic/mems/mem.jpg')
+    photo = InputFile('.media/pic/mems/mem.jpeg')
     await message.reply_photo(photo=photo)
 
 
