@@ -1,13 +1,14 @@
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from decouple import Csv, config
+from typing import Tuple
 
-API_TOKEN = config('TOKEN')
-ADMINS: tuple = config('ADMINS', cast=Csv(post_process=tuple, cast=int))
+API_TOKEN: str = config('TOKEN')
+ADMINS: Tuple[int] = config('ADMINS', cast=Csv(post_process=tuple, cast=int))
 
-bot = Bot(token=API_TOKEN)
+bot: Bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
-dispatcher = Dispatcher(
+dispatcher: Dispatcher = Dispatcher(
     bot,
     storage=storage
 )
