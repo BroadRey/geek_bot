@@ -1,16 +1,19 @@
+import asyncio
 import logging
 
 from aiogram.utils import executor
 from config import dispatcher
-from database.db import sql_create_db_conection, sql_create_table
+from database.db import sql_create_table
 from general_chats_logics.handlers import command_handlers as general_handlers
 from group_admin_logics.handlers import callbacks
 from group_admin_logics.handlers import command_handlers as group_handlers
-from private_chat_logics.handlers import (forms_handlers,
-                                          command_handlers as private_handlers)
+from private_chat_logics.handlers import command_handlers as private_handlers
+from private_chat_logics.handlers import forms_handlers
+from private_chat_logics.notifications import lets_go_rest
 
 
 async def on_startup(dp):
+    asyncio.create_task(lets_go_rest.create_scheduler())
     await sql_create_table()
 
 if __name__ == '__main__':
