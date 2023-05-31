@@ -12,7 +12,7 @@ from private_chat_logics.handlers import forms_handlers
 from private_chat_logics.notifications import lets_go_rest
 
 
-async def on_startup(dp):
+async def on_startup(dp) -> None:
     asyncio.create_task(lets_go_rest.create_scheduler())
     await sql_create_table()
 

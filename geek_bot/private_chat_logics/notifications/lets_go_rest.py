@@ -4,7 +4,7 @@ from apscheduler.triggers.cron import CronTrigger
 from config import ADMINS, bot
 
 
-async def schedule_go_rest():
+async def schedule_go_rest() -> None:
     with open('media/gif/chill_gomer.gif', 'rb') as my_gif:
         for admin_id in ADMINS:
             await bot.send_animation(
@@ -17,7 +17,7 @@ async def schedule_go_rest():
             )
 
 
-async def create_scheduler():
+async def create_scheduler() -> None:
     scheduler = AsyncIOScheduler(timezone="Asia/Bishkek")
 
     scheduler.add_job(

@@ -4,7 +4,7 @@ from aiogram import filters, types
 
 
 class IsGroupChat(filters.BoundFilter):
-    async def check(self, event: Union[types.Message, types.CallbackQuery]):
+    async def check(self, event: Union[types.Message, types.CallbackQuery]) -> bool:
         if isinstance(event, types.Message):
             return event.chat.type != 'private'
 
@@ -12,7 +12,7 @@ class IsGroupChat(filters.BoundFilter):
 
 
 class IsPrivateChat(filters.BoundFilter):
-    async def check(self, event: Union[types.Message, types.CallbackQuery]):
+    async def check(self, event: Union[types.Message, types.CallbackQuery]) -> bool:
         if isinstance(event, types.Message):
             return event.chat.type == 'private'
 

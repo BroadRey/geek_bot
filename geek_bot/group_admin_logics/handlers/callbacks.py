@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import bot
 
 
-def register_callbacks_handlers(dispatcher: Dispatcher):
+def register_callbacks_handlers(dispatcher: Dispatcher) -> None:
     dispatcher.register_callback_query_handler(
         next_1_callback_handler,
         text='next_1'
@@ -19,7 +19,7 @@ def register_callbacks_handlers(dispatcher: Dispatcher):
     )
 
 
-async def next_1_callback_handler(callback: types.CallbackQuery):
+async def next_1_callback_handler(callback: types.CallbackQuery) -> None:
     await bot.edit_message_reply_markup(
         callback.message.chat.id,
         callback.message.message_id,
@@ -49,7 +49,7 @@ async def next_1_callback_handler(callback: types.CallbackQuery):
     )
 
 
-async def next_2_callback_handler(callback: types.CallbackQuery):
+async def next_2_callback_handler(callback: types.CallbackQuery) -> None:
     await bot.edit_message_reply_markup(
         callback.message.chat.id,
         callback.message.message_id,
@@ -82,7 +82,7 @@ async def next_2_callback_handler(callback: types.CallbackQuery):
     )
 
 
-async def next_3_callback_handler(callback: types.CallbackQuery):
+async def next_3_callback_handler(callback: types.CallbackQuery) -> None:
     await bot.edit_message_reply_markup(
         callback.message.chat.id,
         callback.message.message_id,

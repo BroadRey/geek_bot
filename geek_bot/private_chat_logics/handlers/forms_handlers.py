@@ -7,7 +7,7 @@ from config import ADMINS
 from database import db
 
 
-def register_form_handlers(dispatcher: Dispatcher):
+def register_form_handlers(dispatcher: Dispatcher) -> None:
     dispatcher.register_message_handler(
         mentor_registration_command_handler,
         handler_filters.IsPrivateChat(),
@@ -53,14 +53,14 @@ class MentorRegistrator(StatesGroup):
     choosing_mentor_group = State()
 
 
-async def cancel_command_handler(msg: types.Message, state: FSMContext):
+async def cancel_command_handler(msg: types.Message, state: FSMContext) -> None:
     current_state = await state.get_state()
     if current_state:
         await state.finish()
         await msg.answer("Добавление ментора прервано!")
 
 
-async def mentor_registration_command_handler(msg: types.Message):
+async def mentor_registration_command_handler(msg: types.Message) -> None:
     if int(msg.from_user.id) not in ADMINS:
         return
 
@@ -68,7 +68,7 @@ async def mentor_registration_command_handler(msg: types.Message):
     await MentorRegistrator.choosing_mentor_telegram_id.set()
 
 
-async def process_choosing_mentor_telegram_id(msg: types.Message, state: FSMContext):
+async def process_choosing_mentor_telegram_id(msg: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['telegram_id'] = msg.text
 
@@ -76,7 +76,7 @@ async def process_choosing_mentor_telegram_id(msg: types.Message, state: FSMCont
     await MentorRegistrator.next()
 
 
-async def process_choosing_mentor_name(msg: types.Message, state: FSMContext):
+async def process_choosing_mentor_name(msg: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['name'] = msg.text
 
@@ -84,7 +84,7 @@ async def process_choosing_mentor_name(msg: types.Message, state: FSMContext):
     await MentorRegistrator.next()
 
 
-async def process_choosing_mentor_course(msg: types.Message, state: FSMContext):
+async def process_choosing_mentor_course(msg: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['course'] = msg.text
 
@@ -92,7 +92,7 @@ async def process_choosing_mentor_course(msg: types.Message, state: FSMContext):
     await MentorRegistrator.next()
 
 
-async def process_choosing_mentor_age(msg: types.Message, state: FSMContext):
+async def process_choosing_mentor_age(msg: types.Message, state: FSMContext) -> None:
     if not msg.text.isdigit():
         await msg.reply('Возраст должен быть целым числом!')
         return
@@ -108,7 +108,7 @@ async def process_choosing_mentor_age(msg: types.Message, state: FSMContext):
     await MentorRegistrator.next()
 
 
-async def process_choosing_mentor_group(msg: types.Message, state: FSMContext):
+async def process_choosing_mentor_group(msg: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['group'] = msg.text
 

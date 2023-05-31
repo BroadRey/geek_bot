@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputFile
 from filters.filters import IsGroupChat
 
 
-def register_command_handlers(dispatcher: Dispatcher):
+def register_command_handlers(dispatcher: Dispatcher) -> None:
     dispatcher.register_message_handler(
         start_command_handler,
         aiogram_filters.CommandStart()
@@ -35,14 +35,14 @@ def register_command_handlers(dispatcher: Dispatcher):
     )
 
 
-async def start_command_handler(message: types.Message):
+async def start_command_handler(message: types.Message) -> None:
     await message.reply(emoji.emojize(
         'Я - бот! :robot:\n'
         'Будем знакомы!')
     )
 
 
-async def quiz_command_handler(message: types.Message):
+async def quiz_command_handler(message: types.Message) -> None:
     inline_markup = InlineKeyboardMarkup()
     next_button = InlineKeyboardButton(
         text='Следующий вопрос',
@@ -67,19 +67,19 @@ async def quiz_command_handler(message: types.Message):
     )
 
 
-async def mem_command_handler(message: types.Message):
+async def mem_command_handler(message: types.Message) -> None:
     photo = InputFile('./pic/mems/mem.jpg')
     await message.reply_photo(photo=photo)
 
 
-async def pin_command_handler(message: types.Message):
+async def pin_command_handler(message: types.Message) -> None:
     if not message.reply_to_message:
         return
 
     await message.reply_to_message.pin()
 
 
-async def dice_commad_handler(message: types.Message):
+async def dice_commad_handler(message: types.Message) -> None:
     await message.reply(
         f'Хотите сыграть в {emoji.emojize(":game_die:")}?\n'
         'Давайте попробуем!\n'
